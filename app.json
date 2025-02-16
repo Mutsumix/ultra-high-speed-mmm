@@ -1,28 +1,44 @@
 {
   "expo": {
-    "name": "ultra-high-speed-mmm",
+    "name": "Ultra High Speed MMM",
     "slug": "ultra-high-speed-mmm",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": false,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "description": "特定のYouTube動画の再生速度を簡単に変更できるアプリ",
+    "githubUrl": "https://github.com/Mutsumix/ultra-high-speed-mmm",
+    "extra": {
+      "eas": {
+        "projectId": "c3afd096-fea4-4aa9-82bf-0bd2606d913a"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c3afd096-fea4-4aa9-82bf-0bd2606d913a"
     }
   }
 }

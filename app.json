@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Ultra High Speed MMM",
+    "name": "高速餅つき動画",
     "slug": "ultra-high-speed-mmm",
     "version": "1.0.0",
     "orientation": "default",
@@ -8,21 +8,25 @@
     "userInterfaceStyle": "dark",
     "newArchEnabled": false,
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#0898C9"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "mutsumix.ultrahighspeedmmm",
+      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "package": "mutsumix.ultrahighspeedmmm",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

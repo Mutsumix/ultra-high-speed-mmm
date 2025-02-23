@@ -1,11 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text, useWindowDimensions } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { StatusBar } from 'expo-status-bar';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Button } from 'react-native-elements';
+import { GameScreen } from './src/screens/GameScreen';
+import { GameResultScreen } from './src/screens/GameResultScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 
-export default function App() {
+type RootStackParamList = {
+  Home: undefined;
+  Game: undefined;
+  GameResult: { count: number };
+};
+
+type MainScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+
+type MainScreenProps = {
+  navigation: MainScreenNavigationProp;
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
+
+function MainScreen({ navigation }: MainScreenProps) {
   const { width, height } = useWindowDimensions();
   const [isLandscape, setIsLandscape] = useState(width > height);
   const [currentSpeed, setCurrentSpeed] = useState(1);
@@ -63,34 +82,29 @@ export default function App() {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-          body {
+          html, body {
             margin: 0;
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-          }
-          .container {
+            padding: 0;
             width: 100%;
-            aspect-ratio: 16/9;
+            height: 100%;
+            overflow: hidden;
           }
           iframe {
             width: 100%;
             height: 100%;
-            border: none;
+            border: 0;
           }
         </style>
       </head>
       <body>
-        <div class="container">
-          <iframe
-            id="player"
-            src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&rel=0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        </div>
+        <iframe
+          id="player"
+          src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=0&rel=0"
+          frameborder="0"
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+        <script src="https://www.youtube.com/iframe_api"></script>
         <script>
           var player;
           function onYouTubeIframeAPIReady() {
@@ -116,7 +130,6 @@ export default function App() {
             }
           }
         </script>
-        <script src="https://www.youtube.com/iframe_api"></script>
       </body>
     </html>
   `;
@@ -183,14 +196,8 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
-      <View style={[
-        styles.content,
-        isLandscape && styles.contentLandscape
-      ]}>
-        <View style={[
-          styles.videoContainer,
-          isLandscape && styles.videoContainerLandscape
-        ]}>
+      <View style={[styles.content, isLandscape && styles.contentLandscape]}>
+        <View style={[styles.videoContainer, isLandscape && styles.videoContainerLandscape]}>
           <WebView
             key={webViewKey}
             ref={webViewRef}
@@ -201,15 +208,9 @@ export default function App() {
             onMessage={onMessage}
           />
         </View>
-        <View style={[
-          styles.controlsContainer,
-          isLandscape && styles.controlsContainerLandscape
-        ]}>
+        <View style={[styles.controlsContainer, isLandscape && styles.controlsContainerLandscape]}>
           <Text style={styles.title}>再生速度</Text>
-          <View style={[
-            styles.controls,
-            isLandscape && styles.controlsLandscape
-          ]}>
+          <View style={[styles.controls, isLandscape && styles.controlsLandscape]}>
             {speeds.map((speed) => (
               <TouchableOpacity
                 key={speed}
@@ -229,47 +230,25 @@ export default function App() {
               </TouchableOpacity>
             ))}
           </View>
-          <View style={[
-            styles.buttonGroup,
-            isLandscape && { flexDirection: 'column', gap: 8 }
-          ]}>
+          <View style={[styles.buttonGroup, isLandscape && { flexDirection: 'column', gap: 8 }]}>
             <TouchableOpacity
-              style={[
-                styles.controlButton,
-                styles.restartButton,
-                isLandscape && styles.controlButtonLandscape
-              ]}
+              style={[styles.controlButton, styles.restartButton, isLandscape && styles.controlButtonLandscape]}
               onPress={restartFromBeginning}
             >
-              <Text style={styles.controlButtonText}>
-                最初から再生
-              </Text>
+              <Text style={[styles.controlButtonText, styles.restartButtonText]}>最初から再生</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.controlButton,
-                styles.resumeButton,
-                isLandscape && styles.controlButtonLandscape
-              ]}
+              style={[styles.controlButton, styles.resumeButton, isLandscape && styles.controlButtonLandscape]}
               onPress={resumeFromLastPosition}
             >
-              <Text style={styles.controlButtonText}>
-                続きから再生
-              </Text>
+              <Text style={styles.controlButtonText}>続きから再生</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            style={[
-              styles.loopButton,
-              isLoopMode && styles.loopButtonActive
-            ]}
+            style={[styles.loopButton, isLoopMode && styles.loopButtonActive]}
             onPress={() => setIsLoopMode(!isLoopMode)}
           >
-            <MaterialIcons
-              name="loop"
-              size={20}
-              color="#FFF"
-            />
+            <MaterialIcons name="loop" size={20} color="#FFF" />
           </TouchableOpacity>
           <Button
             title="餅つきゲームで遊ぶ"
@@ -284,6 +263,52 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#000',
+          },
+          headerTintColor: '#fff', // タイトルとバックボタンの色を白に
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      >
+        <Stack.Screen
+          name="Home"
+          component={MainScreen}
+          options={{ title: '餅つき動画' }}
+        />
+        <Stack.Screen
+          name="Game"
+          component={GameScreen}
+          options={{
+            title: '餅つきゲーム',
+            headerStyle: {
+              backgroundColor: '#fff', // ゲーム画面は白背景
+            },
+            headerTintColor: '#000', // ゲーム画面は黒文字
+          }}
+        />
+        <Stack.Screen
+          name="GameResult"
+          component={GameResultScreen}
+          options={{
+            title: 'ゲーム結果',
+            headerStyle: {
+              backgroundColor: '#fff', // 結果画面も白背景
+            },
+            headerTintColor: '#000', // 結果画面も黒文字
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -294,34 +319,35 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 20,
     width: '100%',
-    alignItems: 'stretch',
+    justifyContent: 'space-between',
   },
   contentLandscape: {
     flexDirection: 'row',
     padding: 10,
   },
   videoContainer: {
-    flex: 1,
+    width: '100%',
+    aspectRatio: 16/9,
     backgroundColor: '#111',
     borderRadius: 10,
     overflow: 'hidden',
-    justifyContent: 'center',
     marginBottom: 20,
-    alignSelf: 'stretch',
   },
   videoContainerLandscape: {
+    flex: 1,
     marginBottom: 0,
     marginRight: 10,
   },
   webview: {
-    aspectRatio: 16/9,
+    width: '100%',
+    height: '100%',
   },
   controlsContainer: {
     backgroundColor: '#111',
     borderRadius: 10,
     padding: 20,
-    alignSelf: 'stretch',
     width: '100%',
+    marginTop: 'auto',
   },
   controlsContainerLandscape: {
     width: 200,
@@ -330,6 +356,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flexShrink: 0,
     padding: 15,
+    marginTop: 0,
   },
   title: {
     color: '#FFF',
@@ -391,11 +418,11 @@ const styles = StyleSheet.create({
   },
   // 最初から再生ボタン用のスタイル
   restartButton: {
-    backgroundColor: '#28a745', // 緑色
+    backgroundColor: '#fff', // 白色に変更
   },
   // 続きから再生ボタン用のスタイル
   resumeButton: {
-    backgroundColor: '#007bff', // 青色
+    backgroundColor: '#007bff', // 青色はそのまま
   },
   controlButtonLandscape: {
     width: '100%',
@@ -403,9 +430,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   controlButtonText: {
-    color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#fff', // デフォルトのテキストカラーを白に設定
+  },
+  // 最初から再生ボタンのテキスト用のスタイル
+  restartButtonText: {
+    color: '#000', // 最初から再生ボタンのみ黒色に上書き
   },
   loopButton: {
     padding: 8,

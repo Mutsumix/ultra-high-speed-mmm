@@ -271,6 +271,13 @@ export default function App() {
               color="#FFF"
             />
           </TouchableOpacity>
+          <Button
+            title="餅つきゲームで遊ぶ"
+            onPress={() => navigation.navigate('Game')}
+            containerStyle={styles.gameButton}
+            buttonStyle={styles.gameButtonStyle}
+            titleStyle={styles.controlButtonText}
+          />
         </View>
       </View>
     </View>
@@ -409,5 +416,15 @@ const styles = StyleSheet.create({
   },
   loopButtonActive: {
     backgroundColor: '#007AFF',
+  },
+  gameButton: {
+    marginTop: 20,
+    width: '100%',
+    borderRadius: 25, // 他のボタンと同じ丸み
+  },
+  // ゲームボタンのスタイルをカスタマイズするためのプロパティ
+  gameButtonStyle: {
+    backgroundColor: '#28a745', // 緑色
+    paddingVertical: 15, // 他のボタンと同じ高さ
   },
 });
